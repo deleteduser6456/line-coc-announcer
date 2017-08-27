@@ -2,7 +2,7 @@ module.exports = {
   line: {
     channelAccessToken: "",
     channelSecret: "",
-    port: ""
+    port: "8080"
   },
   updateInterval: 60 * 2, // 2 Minutes
   cocApiKey: '',

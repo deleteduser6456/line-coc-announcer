@@ -19,6 +19,13 @@ var users = Storage.getItemSync("users");
 if (!users) {
   Storage.setItemSync("users", []);
 }
+var warAtt = Storage.getItemSync("warAttacks");
+if (!warAtt) {
+  warAtt = new Array(31);
+  warAtt.fill("empty");
+  warAtt[0] = "dont use me"
+  Storage.setItemSync("warAttacks", warAtt);
+}
 var warCalls = Storage.getItemSync("warCalls");
 if (!warCalls) {
   warCalls = new Array(31);
@@ -73,11 +80,12 @@ global.checkForUpdate = (currentCommit, commitComment) => {
     Storage.setItemSync("lastUpdate", currentCommit);
   } else {
     if (currentCommit !== lastUpdate) {
-      var updateMsg = `New Update Available
+      var updateMsg = `New Update Available\n
       ${commitComment}`
 
       notify(updateMsg);
-      
+      Storage.setItemSync("lastUpdate", currentCommit);
+
     }
   }
 }
@@ -121,15 +129,29 @@ global.discordAttackMessage = (WarData, attackData) => {
     opponentPlayer = Players[attackData.defenderTag]
 
 
+    var warAtt = Storage.getItemSync("warAttacks");
     var warCalls = Storage.getItemSync("warCalls");
     if (attackData.stars === 3) {
       warCalls[opponentPlayer.mapPosition] = "hide";
+      Storage.setItemSync("warCalls", warCalls);
     } else {
-      var opponentSpot = warCalls[opponentPlayer.mapPosition];
-      var args = opponentSpot.split("//");
+      var opponentSpot = warAtt[opponentPlayer.mapPosition];
 
-      // not sure what  else to do
+      if (opponentSpot !== "empty") {
+        var args = opponentSpot.split(" ");
 
+        var stars = args[0];
+        var percent = args[1];
+
+        if (percent < Math.round(attackData.destructionPercentage)) {
+          warAtt[opponentPlayer.mapPosition] = `${attackData.stars} ${attackData.destructionPercentage}`
+          Storage.setItemSync("warAttacks", warAtt);
+        }
+
+      } else {
+        warAtt[opponentPlayer.mapPosition] = `${attackData.stars} ${attackData.destructionPercentage}`
+        Storage.setItemSync("warAttacks", warAtt);
+      }
     }
 
   } else if (attackData.who === 'opponent') {
@@ -221,11 +243,17 @@ global.parseCurrentWar = (war) => {
     var WarData = Storage.getItemSync(warId);
     if (!WarData) {
       WarData = { lastReportedAttack: 0, prepDayReported: false, clanCastleReported: false, battleDayReported: false, lastHourReported: false, finalMinutesReported: false }
-      var warCalls = Storage.getItemSync("warCalls");
+      var warCall;
       warCalls = new Array(war.teamSize + 1);
       warCalls.fill("empty");
       warCalls[0] = "dont use me"
       Storage.setItemSync("warCalls", warCalls);
+
+      var warAtt;
+      warAtt = new Array(war.teamSize + 1);
+      warAtt.fill("empty");
+      warAtt[0] = "dont use me"
+      Storage.setItemSync("warAttacks", warAtt);
     }
 
     let tmpAttacks = {}

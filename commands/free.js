@@ -13,5 +13,5 @@ exports.run = (client, message, args) => {
   })
 
 
-  msg.reply(list);
+  message.reply(list);
 }

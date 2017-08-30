@@ -61,7 +61,7 @@ Client.on("message", (message) => {
     let commandFile = require(`./commands/${command}.js`);
     commandFile.run(Client, message, args);
   } catch (err) {
-    console.log(err)
+
   }
 });
 
@@ -77,7 +77,7 @@ var LogMessage = `
         Discord: KingCosmic#2713
         Email: KingCosmicDev@gmail.com
 
-  Been announcing coc wars since ${moment("2017-08-25T23:13:33-05:00").fromNow()}
+  Been announcing coc wars since ${moment("2017-08-25T23:13:33-05:00").format("MMM Do YYYY")}
 `
 
 console.log(chalk.green(LogMessage));

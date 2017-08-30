@@ -6,9 +6,9 @@ exports.run = (client, message, args) => {
 
   var warData = Storage.getItemSync(warId);
 
-  if (warData.stats.state == "warEnded") return message.reply("there is no war to be calling oponents");
+  if (warData.stats.state == "warEnded" || !warData) return message.reply("there is no war to be calling oponents");
 
-  if (number < 0 || number > 30) {
+  if (number < 1 || number > 30) {
     return message.reply("bases are only between 1 and 30");
   }
 
@@ -18,6 +18,8 @@ exports.run = (client, message, args) => {
 
     message.reply(`you have called ${number}`);
     notify(`${message.author.displayName} has called, ${number}`)
+  } else if (warCalls[number] === "hide") {
+    message.reply("this spot has been 3 star'ed so theirs no point in calling it")
   } else {
     message.reply(`That spot is taken by ${warCalls[number]}`);
   }

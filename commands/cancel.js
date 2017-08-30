@@ -5,19 +5,21 @@ exports.run = (client, message, args) => {
   var warData = Storage.getItemSync(warId);
   var warCalls = Storage.getItemSync("warCalls");
 
-  if (warData.stats.state == "warEnded") return message.reply("there is no war to be cancelling calls");
+  if (warData.stats.state == "warEnded" || !warData) return message.reply("there is no war to be cancelling calls");
 
-  if (number < 0 || number > 30) {
+  if (number < 1 || number > 30) {
     return message.reply("bases are only between 1 and 30");
   }
 
   if(warCalls[number] === "empty" ){
     message.reply(`That spot isnt called yet`);
-    warCalls[number] = message.author.displayName;
+  } else if (warCalls[number] === "hide") {
+    message.reply("this spot has been 3 star'ed so its already been canceled")
   } else if (warCalls[number] !== message.author.displayName) {
     message.reply("you can't cancel someone elses call");
   } else {
     warCalls[number] = "empty";
+    Storage.setItemSync("warCalls", warCalls);
     message.reply(`That spot has been cancled`);
   }
 }

@@ -36,6 +36,9 @@ exports.getCurrentWar = (clanTag, done) => {
       done(response);
     }
   })
+  .catch((err) => {
+    console.log(err)
+  });
 }
 
 exports.getWarLog = (clanTag, done) => {
@@ -45,6 +48,9 @@ exports.getWarLog = (clanTag, done) => {
     if (done) {
       done(response);
     }
+  })
+  .catch((err) => {
+    console.log(err)
   });
 }
 
@@ -55,7 +61,41 @@ exports.getPlayer = (playerTag, done) => {
     if (done) {
       done(response);
     }
+  })
+  .catch((err) => {
+    console.log(err)
   });
+}
+
+global.checkForUpdate = (currentCommit, commitComment) => {
+  var lastUpdate = Storage.getItemSync("lastUpdate");
+  if (!lastUpdate) {
+    Storage.setItemSync("lastUpdate", currentCommit);
+  } else {
+    if (currentCommit !== lastUpdate) {
+      var updateMsg = `New Update Available
+      ${commitComment}`
+
+      notify(updateMsg);
+      
+    }
+  }
+}
+
+global.notify = (string) => {
+  var group = Storage.getItemSync("updateGroup");
+  if (group) {
+    Client.sendMessage(group, string);
+  }
+}
+
+global.notifyUsers = (string) => {
+  var users = Storage.getItemSync("users");
+  if (user.length != 0) {
+    users.forEach((user) => {
+      client.sendMessage(user, string);
+    })
+  }
 }
 
 global.Players = {}
@@ -80,9 +120,17 @@ global.discordAttackMessage = (WarData, attackData) => {
     clanPlayer = Players[attackData.attackerTag]
     opponentPlayer = Players[attackData.defenderTag]
 
-    console.log(opponentPlayer.mapPosition)
 
+    var warCalls = Storage.getItemSync("warCalls");
+    if (attackData.stars === 3) {
+      warCalls[opponentPlayer.mapPosition] = "hide";
+    } else {
+      var opponentSpot = warCalls[opponentPlayer.mapPosition];
+      var args = opponentSpot.split("//");
 
+      // not sure what  else to do
+
+    }
 
   } else if (attackData.who === 'opponent') {
 
@@ -151,7 +199,7 @@ global.discordAttackMessage = (WarData, attackData) => {
   }
 
   WarData.lastReportedAttack = attackData.order
-  Storage.setItemSync(warId, WarData)
+  Storage.setItemSync(warId, WarData);
 
   notify(AttackMessage);
 }
@@ -170,11 +218,9 @@ global.parseCurrentWar = (war) => {
     sha1.update(war.clan.tag + opponentTag + war.preparationStartTime)
     warId = sha1.digest('hex');
 
-    console.log(war)
-
     var WarData = Storage.getItemSync(warId);
     if (!WarData) {
-      WarData = { lastReportedAttack: 0, prepDayReported: false, battleDayReported: false, lastHourReported: false, finalMinutesReported: false }
+      WarData = { lastReportedAttack: 0, prepDayReported: false, clanCastleReported: false, battleDayReported: false, lastHourReported: false, finalMinutesReported: false }
       var warCalls = Storage.getItemSync("warCalls");
       warCalls = new Array(war.teamSize + 1);
       warCalls.fill("empty");
@@ -230,6 +276,16 @@ global.parseCurrentWar = (war) => {
         success: 0
       }
     }
+    let TH11v11 = {
+      clan: {
+        attempt: 0,
+        success: 0
+      },
+      opponent: {
+        attempt: 0,
+        success: 0
+      }
+    }
     Object.keys(tmpAttacks).forEach(k => {
       let attack = tmpAttacks[k]
       let clanPlayer
@@ -274,12 +330,25 @@ global.parseCurrentWar = (war) => {
           } else if (attack.who === 'opponent') {
             TH10v11.opponent.attempt++
           }
-          if (attack.stars >= 2) {
+          if (attack.stars === 3) {
             if (attack.who === 'clan') {
               TH10v11.clan.success++
             } else if (attack.who === 'opponent') {
               TH10v11.opponent.success++
             }
+          }
+        }
+      } else if (clanPlayer.townhallLevel === 11 && opponentPlayer.townhallLevel === 11) {
+        if (attack.who === 'clan') {
+          TH11v11.clan.attempt++
+        } else if (attack.who === 'opponent') {
+          TH11v11.opponent.attempt++
+        }
+        if (attack.stars === 3) {
+          if (attack.who === 'clan') {
+            TH11v11.clan.success++
+          } else if (attack.who === 'opponent') {
+            TH11v11.opponent.success++
           }
         }
       }
@@ -292,7 +361,8 @@ global.parseCurrentWar = (war) => {
       hitrate: {
         TH9v9: TH9v9,
         TH10v10: TH10v10,
-        TH10v11: TH10v11
+        TH10v11: TH10v11,
+        TH11v11: TH11v11
       },
       clan: {
         tag: war.clan.tag,
@@ -346,6 +416,9 @@ global.parseCurrentWar = (war) => {
         WarData.prepDayReported = true
         discordReportMessage(WarData, prepDay)
 
+      } else if (!WarData.clanCastleReported && prepTime < 120 * 60 * 1000) {
+        let clanCastleReminder = config.messages.clanCastleReminder;
+        discordReportMessage(WarData, clanCastleReminder);
       }
     }
     if (!WarData.battleDayReported && startTime < new Date()) {
@@ -373,11 +446,10 @@ global.parseCurrentWar = (war) => {
 
     attacks.slice(reportFrom).forEach(attack => {
 
-
       discordAttackMessage(WarData, attack);
 
-
     })
+    Storage.setItemSync(warId, WarData);
   } else if (war && war.reason == 'notInWar') {
     console.log(chalk.orange.bold(clan.tag.toUpperCase().replace(/O/g, '0') + ' Clan is not currently in war.'))
   } else if (war && war.reason == 'accessDenied') {

@@ -11,8 +11,10 @@
   "dependencies": {
     "chalk": "^2.1.0",
     "clash-of-clans-api": "^0.4.0",
-    "line.js": "^2.1.1",
+    "line.js": "^2.3.2",
     "moment": "^2.18.1",
-    "node-persist": "^2.1.0"
+    "node-persist": "^2.1.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
   }
 }

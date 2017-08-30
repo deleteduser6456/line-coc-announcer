@@ -2,26 +2,40 @@ const line = require('line.js');
 const fs = require('fs');
 const chalk = require('chalk');
 const moment = require('moment');
+const rp = require('request-promise');
 
 var config = require('./config')
 var funcs = require('./util/functions.js');
 
-var Client = new line.Client({
+global.Client = new line.Client({
   channelAccessToken: config.line.channelAccessToken,
   channelSecret: config.line.channelSecret,
   port: config.line.port
 });
 
-global.notify = (string) => {
-  var group = Storage.getItemSync("updateGroup");
-  if (group) {
-    Client.client.pushMessage(group, {type: "text", text: string});
-  }
-}
+var options = {
+  uri: 'https://api.github.com/repos/KingCosmic/line-coc-announcer/commits',
+  headers: {
+    'User-Agent': 'line-coc-announcer'
+  },
+  json: true // Automatically parses the JSON string in the response
+};
+
+rp(options)
+.then(function (data) {
+  checkForUpdate(data[0].sha, data[0].commit.message);
+})
+
+setInterval(function() {
+  rp(options)
+  .then(function (data) {
+    checkForUpdate(data[0].sha, data[0].commit.message)
+  })
+}, 1000 * (60 * 10));
 
 setInterval(function() {
   funcs.getCurrentWar(config.clanTag)
-}, 1000 * config.updateInterval)
+}, 1000 * config.updateInterval);
 
 funcs.getCurrentWar(config.clanTag)
 
@@ -47,7 +61,7 @@ Client.on("message", (message) => {
     let commandFile = require(`./commands/${command}.js`);
     commandFile.run(Client, message, args);
   } catch (err) {
-
+    console.log(err)
   }
 });
 

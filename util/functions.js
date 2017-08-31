@@ -230,15 +230,13 @@ global.fixISO = str => {
   return str.substr(0,4) + "-" + str.substr(4,2) + "-" + str.substr(6,5) + ":" + str.substr(11,2) + ":" +  str.substr(13)
 }
 
-global.warId;
-
 global.parseCurrentWar = (war) => {
   // Making sure we actually have war data to mess with lol
   if (war && war.reason != 'accessDenied' && war.state != 'notInWar') {
     let sha1 = crypto.createHash('sha1')
     let opponentTag = war.opponent.tag
     sha1.update(war.clan.tag + opponentTag + war.preparationStartTime)
-    warId = sha1.digest('hex');
+    global.warId = sha1.digest('hex');
 
     var WarData = Storage.getItemSync(warId);
     if (!WarData) {

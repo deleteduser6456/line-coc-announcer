@@ -20,6 +20,9 @@ exports.run = (client, message, args) => {
   } else {
     warCalls[number] = "empty";
     Storage.setItemSync("warCalls", warCalls);
-    message.reply(`That spot has been cancled`);
+
+    list((list) => {
+      message.reply(`${number} has been cancled\n${list}`);
+    })
   }
 }

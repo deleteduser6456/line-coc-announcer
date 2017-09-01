@@ -15,12 +15,12 @@ exports.run = (client, message, args) => {
   if(warCalls[number] === "empty"){
     warCalls[number] =  `${message.author.displayName}`;
     Storage.setItemSync("warCalls", warCalls);
-
-    message.reply(`you have called ${number}`);
-    notify(`${message.author.displayName} has called, ${number}`)
+    list((list) => {
+      message.reply(`you have called ${number}\n${list}`);
+    })
   } else if (warCalls[number] === "hide") {
     message.reply("this spot has been 3 star'ed so theirs no point in calling it")
   } else {
-    message.reply(`That spot is taken by ${warCalls[number]}`);
+    message.reply(`${number} is taken by ${warCalls[number]}`);
   }
 }

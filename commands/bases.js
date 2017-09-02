@@ -6,3 +6,5 @@ exports.run = (client, message, args) => {
   })
 
 }
+
+exports.description = "get the list of calls `bases`"

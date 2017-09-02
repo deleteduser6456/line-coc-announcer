@@ -101,7 +101,7 @@ global.list = (done) => {
         } else if (stars == 2) {
           starMsg += '🌟🌟'
         } else {
-          starMsg += '🌟🌟🌟'
+          starMsg += ''
         }
 
         list += `${index}. ${starMsg} ${percent}%\n`
@@ -122,7 +122,7 @@ global.list = (done) => {
         } else if (stars == 2) {
           starMsg += '🌟🌟'
         } else {
-          starMsg += '🌟🌟🌟'
+          starMsg += ''
         }
 
         list += `${index}. ${call}, ${starMsg} ${percent}%\n`
@@ -231,23 +231,29 @@ global.discordAttackMessage = (WarData, attackData) => {
         destructionPercentage: ${attackData.destructionPercentage}%
         stars: 🌟
       `
-    }
-    if (attackData.stars == 2) {
+    } else if (attackData.stars == 2) {
       AttackMessage = `
         ${WarData.stats.clan.name} attacked ${WarData.stats.opponent.name}
-        Attacker: ${Players[attackData.attackerTag].name}
-        Defender: ${Players[attackData.defenderTag].name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
         destructionPercentage: ${attackData.destructionPercentage}%
         stars: 🌟🌟
       `
-    }
-    if (attackData.stars == 3) {
+    } else if (attackData.stars == 3) {
+      AttackMessage = `
+        ${WarData.stats.clan.name} attacked ${WarData.stats.opponent.name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
+        destructionPercentage: ${attackData.destructionPercentage}%
+        stars: 🌟🌟🌟
+      `
+    } else {
       AttackMessage = `
         ${WarData.stats.clan.name} attacked ${WarData.stats.opponent.name}
         Attacker: ${Players[attackData.attackerTag].name}
         Defender: ${Players[attackData.defenderTag].name}
         destructionPercentage: ${attackData.destructionPercentage}%
-        stars: 🌟🌟🌟
+        stars: 0
       `
     }
   }
@@ -255,28 +261,34 @@ global.discordAttackMessage = (WarData, attackData) => {
     if (attackData.stars == 1) {
       AttackMessage = `
         ${WarData.stats.opponent.name} attacked ${WarData.stats.clan.name}
-        Attacker: ${Players[attackData.attackerTag].name}
-        Defender: ${Players[attackData.defenderTag].name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
         destructionPercentage: ${attackData.destructionPercentage}%
         stars: 🌟
       `
-    }
-    if (attackData.stars == 2) {
+    } else if (attackData.stars == 2) {
       AttackMessage = `
         ${WarData.stats.opponent.name} attacked ${WarData.stats.clan.name}
-        Attacker: ${Players[attackData.attackerTag].name}
-        Defender: ${Players[attackData.defenderTag].name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
         destructionPercentage: ${attackData.destructionPercentage}%
         stars: 🌟🌟
       `
-    }
-    if (attackData.stars == 3) {
+    } else if (attackData.stars == 3) {
       AttackMessage = `
         ${WarData.stats.opponent.name} attacked ${WarData.stats.clan.name}
-        Attacker: ${Players[attackData.attackerTag].name}
-        Defender: ${Players[attackData.defenderTag].name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
         destructionPercentage: ${attackData.destructionPercentage}%
         stars: 🌟🌟🌟
+      `
+    } else {
+      AttackMessage = `
+        ${WarData.stats.opponent.name} attacked ${WarData.stats.clan.name}
+        Attacker: ${Players[attackData.attackerTag].mapPosition}. ${Players[attackData.attackerTag].name}
+        Defender: ${Players[attackData.defenderTag].mapPosition}. ${Players[attackData.defenderTag].name}
+        destructionPercentage: ${attackData.destructionPercentage}%
+        stars: 0
       `
     }
   }

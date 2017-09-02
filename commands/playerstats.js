@@ -2,7 +2,6 @@ var funcs = require('../util/functions');
 
 exports.run = (client, message, args) => {
 
-
   if (args[0]) {
     funcs.getPlayer(args[0].toUpperCase().replace(/O/g, '0'), data => {
 
@@ -77,3 +76,5 @@ exports.run = (client, message, args) => {
     message.reply('Please provide a player tag to look up.\n\nplayerstats #playertag')
   }
 }
+
+exports.description = "see what stats a player has `playerstats #playertag`";

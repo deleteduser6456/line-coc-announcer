@@ -26,6 +26,8 @@ exports.run = (client, message, args) => {
   }
 }
 
+exports.description = "used to see the hitrate stats `hitrate`";
+
 discordHitrateMessage = (WarData, msg) => {
 
   if (WarData.stats.state === 'inWar' || WarData.stats.state === 'warEnded') {

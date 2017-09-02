@@ -15,14 +15,14 @@ exports.run = (client, message, args) => {
     message.reply(`That spot isnt called yet`);
   } else if (warCalls[number] === "hide") {
     message.reply("this spot has been 3 star'ed so its already been canceled")
-  } else if (warCalls[number] !== message.author.displayName) {
-    message.reply("you can't cancel someone elses call");
   } else {
     warCalls[number] = "empty";
     Storage.setItemSync("warCalls", warCalls);
 
     list((list) => {
-      message.reply(`${number} has been cancled\n${list}`);
+      message.reply(`${number} has been canceled\n${list}`);
     })
   }
 }
+
+exports.description = "cancel your call `cancel 4`";

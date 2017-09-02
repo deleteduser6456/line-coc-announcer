@@ -39,7 +39,7 @@ setInterval(function() {
 
 funcs.getCurrentWar(config.clanTag)
 
-// This loop reads the /events/ folder and attaches each event file to the appropriate event.
+// This loop reads the /command/ folder and attaches each event file to the appropriate event.
 fs.readdir("./commands/", (err, files) => {
   if (err) return console.error(err);
   files.forEach(file => {

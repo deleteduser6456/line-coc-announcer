@@ -11,3 +11,5 @@ exports.run = (client, message, args) => {
 
   message.reply("you will now recieve updates via dm");
 }
+
+exports.description = "subscribe to some bot events";

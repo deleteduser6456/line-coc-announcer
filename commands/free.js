@@ -15,3 +15,5 @@ exports.run = (client, message, args) => {
 
   message.reply(list);
 }
+
+exports.description = "see what bases aren't called `free`";

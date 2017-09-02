@@ -14,3 +14,5 @@ exports.run = (client, message, args) => {
   message.reply("you will stop recieving updates via dm");
 
 }
+
+exports.description = "stop recieving some bot uevents";

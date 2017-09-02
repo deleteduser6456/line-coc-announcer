@@ -25,6 +25,8 @@ exports.run = (client, message, args) => {
   }
 }
 
+exports.description = "see war stats for the current war";
+
 function discordStatsMessage(WarData, message) {
   let extraMessage = ''
   if (WarData.stats.state === 'preparation') {

@@ -37,18 +37,7 @@ setInterval(function() {
   funcs.getCurrentWar(config.clanTag)
 }, 1000 * config.updateInterval);
 
-funcs.getCurrentWar(config.clanTag)
-
-// This loop reads the /command/ folder and attaches each event file to the appropriate event.
-fs.readdir("./commands/", (err, files) => {
-  if (err) return console.error(err);
-  files.forEach(file => {
-    let eventFunction = require(`./commands/${file}`);
-    let eventName = file.split(".")[0];
-    // super-secret recipe to call events with all their proper arguments *after* the `client` var.
-    Client.on(eventName, (...args) => eventFunction.run(client, ...args));
-  });
-});
+funcs.getCurrentWar(config.clanTag);
 
 Client.on("message", (message) => {
 

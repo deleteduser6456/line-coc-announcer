@@ -4,9 +4,9 @@ const fs = require('fs');
 exports.run = (client, message, args) => {
   // This loop reads the /command/ folder and attaches each event file to the appropriate event.
 
-  let helpMessage;
+  let helpMessage = "";
 
-  fs.readdir("./", (err, files) => {
+  fs.readdir("./commands", (err, files) => {
     if (err) return console.error(err);
     files.forEach(file => {
       let command = require(`./${file}`);

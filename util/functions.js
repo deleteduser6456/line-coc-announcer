@@ -520,6 +520,7 @@ global.parseCurrentWar = (war) => {
 
       } else if (!WarData.clanCastleReported && prepTime < 120 * 60 * 1000) {
         let clanCastleReminder = config.messages.clanCastleReminder;
+        WarData.clanCastleReported = true
         discordReportMessage(WarData, clanCastleReminder);
       }
     }

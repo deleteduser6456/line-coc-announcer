@@ -3,9 +3,14 @@ const fs = require('fs');
 const chalk = require('chalk');
 const moment = require('moment');
 const rp = require('request-promise');
+const responseTime = require('response-time');
 
 var config = require('./config')
 var funcs = require('./util/functions.js');
+global.saveme = ''
+global.tc = 0
+global.otc =0
+
 
 global.Client = new line.Client({
   channelAccessToken: config.line.channelAccessToken,
@@ -20,6 +25,7 @@ var options = {
   },
   json: true // Automatically parses the JSON string in the response
 };
+
 
 rp(options)
 .then(function (data) {
@@ -50,8 +56,11 @@ Client.on("message", (message) => {
     let commandFile = require(`./commands/${command}.js`);
     commandFile.run(Client, message, args);
   } catch (err) {
-
+    console.log(err);
   }
+
+
+
 });
 
 var LogMessage = `
@@ -70,3 +79,4 @@ var LogMessage = `
 `
 
 console.log(chalk.green(LogMessage));
+
